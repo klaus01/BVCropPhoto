@@ -95,7 +95,7 @@
 
     CGFloat zoomScale = 1.0;
 
-    if ( self.imageView.frame.size.width >= self.imageView.frame.size.height ) {
+    if ( (self.imageView.frame.size.width / self.imageView.frame.size.height) >= (self.cropSize.width / self.cropSize.height) ) {
         zoomScale = self.cropSize.height / self.imageView.frame.size.height;
     } else {
         zoomScale = self.cropSize.width / self.imageView.frame.size.width;

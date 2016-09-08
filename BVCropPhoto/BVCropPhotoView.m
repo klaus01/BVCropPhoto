@@ -84,6 +84,7 @@
 
 
 - (void)setupZoomScale {
+    [self.scrollView setZoomScale:1];
     [self.imageView setImage:self.sourceImage];
     [self.imageView sizeToFit];
 
@@ -210,6 +211,13 @@
     }
 
     return finalImage;
+}
+
+
+- (void)setCropSize:(CGSize)cropSize {
+    _cropSize = cropSize;
+    self.imageView.image = nil;
+    [self setNeedsLayout];
 }
 
 

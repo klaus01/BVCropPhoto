@@ -190,27 +190,38 @@
     
 }
 
-
-- (UIImage *)croppedImage {
-    CGFloat scale = self.sourceImage.size.width / self.scrollView.contentSize.width;
-
+- (UIImage *)_croppedWithImage:(UIImage *)image inRect:(CGRect)rect {
     UIImage *finalImage = nil;
-    CGRect targetFrame = CGRectMake((self.scrollView.contentInset.left + self.scrollView.contentOffset.x) * scale,
-            (self.scrollView.contentInset.top + self.scrollView.contentOffset.y) * scale,
-            self.cropSize.width * scale,
-            self.cropSize.height * scale);
-
-    CGImageRef contextImage = CGImageCreateWithImageInRect([[self fixrotation:self.sourceImage] CGImage], targetFrame);
-
+    CGImageRef contextImage = CGImageCreateWithImageInRect([[self fixrotation:image] CGImage], rect);
+    
     if (contextImage != NULL) {
         finalImage = [UIImage imageWithCGImage:contextImage
-                                         scale:self.sourceImage.scale
+                                         scale:image.scale
                                    orientation:UIImageOrientationUp];
-
+        
         CGImageRelease(contextImage);
     }
-
+    
     return finalImage;
+}
+
+- (UIImage *)croppedImage {
+    CGFloat zoomScale = self.sourceImage.size.width / self.scrollView.contentSize.width;
+    CGFloat imageScale = self.sourceImage.scale;
+    CGRect targetFrame = CGRectMake((self.scrollView.contentInset.left + self.scrollView.contentOffset.x) * zoomScale * imageScale,
+                                    (self.scrollView.contentInset.top + self.scrollView.contentOffset.y) * zoomScale * imageScale,
+                                    self.cropSize.width * zoomScale * imageScale,
+                                    self.cropSize.height * zoomScale * imageScale);
+    
+    if (self.sourceImage.images.count > 1 && self.sourceImage.duration > 0) {
+        NSMutableArray *images = [NSMutableArray array];
+        for (UIImage *image in self.sourceImage.images) {
+            [images addObject:[self _croppedWithImage:image inRect:targetFrame]];
+        }
+        return [UIImage animatedImageWithImages:images duration:self.sourceImage.duration];
+    } else {
+        return [self _croppedWithImage:self.sourceImage inRect:targetFrame];
+    }
 }
 
 

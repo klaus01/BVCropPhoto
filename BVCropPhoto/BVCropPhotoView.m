@@ -92,14 +92,14 @@
     CGFloat offsetY = ceilf( self.scrollView.frame.size.height / 2 - self.cropSize.height / 2);
     self.scrollView.contentInset = UIEdgeInsetsMake(offsetY, offsetX, offsetY, offsetX);
 
-    [self.scrollView setContentSize:self.imageView.frame.size];
+    [self.scrollView setContentSize:self.imageView.image.size];
 
     CGFloat zoomScale = 1.0;
 
-    if ( (self.imageView.frame.size.width / self.imageView.frame.size.height) >= (self.cropSize.width / self.cropSize.height) ) {
-        zoomScale = self.cropSize.height / self.imageView.frame.size.height;
+    if ((self.imageView.image.size.width / self.imageView.image.size.height) >= (self.cropSize.width / self.cropSize.height)) {
+        zoomScale = self.cropSize.height / self.imageView.image.size.height;
     } else {
-        zoomScale = self.cropSize.width / self.imageView.frame.size.width;
+        zoomScale = self.cropSize.width / self.imageView.image.size.width;
     }
 
     [self.scrollView setMinimumZoomScale:zoomScale];
